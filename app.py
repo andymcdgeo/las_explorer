@@ -1,9 +1,12 @@
 import streamlit as st
 from load_css import local_css
 import lasio
+from multiapp import MultiApp
+import pandas as pd
 
 local_css("style.css")
 
+@st.cache
 def load_data(uploadedfile):
     if uploadedfile:
         # uploaded_file = lasio.read(las_file_object)
@@ -13,33 +16,56 @@ def load_data(uploadedfile):
         # st.write(string)
 
         las_file = lasio.read(string)
-        #st.write(las_file.well.WELL.value)
 
         return las_file
-    
 
 
-st.title('LAS Data Explorer')
-st.write('## Welcome to the LAS Data Explorer')
-st.write('''LAS Data Explorer is a tool designed in Streamlit to help you view and gain an understanding of the contents of
-a LAS file''')
-st.write('To begin using the app, load your LAS file using the file upload option below.')
+# Sidebar Options
+las_file=None
+st.sidebar.write('# LAS Data Explorer')
+st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
 
-uploadedfile = st.file_uploader(' ', type=['las'])
+uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
 las_file = load_data(uploadedfile)
 
 if las_file:
-    load_success_text = "<div class='load_successful_text'>File Uploaded Successfully!</div>"
-    st.write(load_success_text, unsafe_allow_html=True)
-    st.write(f'<b>LAS Version:</b> {las_file.version.VERS.value}', unsafe_allow_html=True)
-    st.write(f'Well Name: {las_file.well.WELL.value}')
-    #st.write(f'API: {las_file.well.API.value}')
-    # st.write(f'Field Name: {las_file.well.FIELD.value}')
+        st.sidebar.success('File Uploaded Successfully')
+        st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
 
-# Sidebar Options
-st.sidebar.write('# LAS Data Explorer')
-
-select_tool = st.sidebar.radio('Make a selection below', ('File Upload', 'LAS Header', 'Curve Details', 'Raw Data', 'Data Visualisation', ' Data Coverage'))
+def home():
+    st.title('LAS Data Explorer')
+    st.write('## Welcome to the LAS Data Explorer')
+    st.write('''LAS Data Explorer is a tool designed in Streamlit to help you view and gain an understanding of the contents of
+    a LAS file''')
+    st.write('To begin using the app, load your LAS file using the file upload option below.')
 
 
-        
+def header():
+    st.title('LAS File Header Info')
+    if not las_file:
+        st.warning('No file has been uploaded')
+    else:
+        for item in las_file.well:
+            st.write(f"<b>{item.descr.capitalize()} ({item.mnemonic}):</b> {item.value}", unsafe_allow_html=True)
+
+def raw_data():
+    for count, curve in enumerate(las_file.curves):
+        st.write(f"<b>Curve:</b> {curve.mnemonic}, <b>Units: </b>{curve.unit}, <b>Description:</b> {curve.descr}", unsafe_allow_html=True)
+    st.write(f"<b>There are a total of: {count+1} curves present within this file</b>", unsafe_allow_html=True)
+    well_data = las_file.df()
+    st.write('<b>Data Statistics</b>', unsafe_allow_html=True)
+    st.write(well_data.describe())
+    st.write('<b>Raw Data Values</b>', unsafe_allow_html=True)
+    st.dataframe(data=well_data)
+            
+
+app = MultiApp()
+app.add_app('Home', home)
+app.add_app('Header Info', header)
+app.add_app('Data Information', raw_data)
+app.add_app('Data Visualisation', header)
+app.add_app('Data Coverage', header)
+
+
+
+app.run()
