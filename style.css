@@ -1,0 +1,15 @@
+.green_text {
+    color: green;
+}
+
+.bold_text {
+    font-weight: bold;
+}
+
+.load_successful_text{
+    background-color: green;
+    color:white;
+    border-radius: 0.4em;
+    padding: 0.5rem;
+    font-weight: bold;
+}
