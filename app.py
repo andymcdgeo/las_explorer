@@ -1,10 +1,19 @@
 import streamlit as st
+st.set_page_config(layout="wide")
+
 from load_css import local_css
 import lasio
+import missingno as mno
 from multiapp import MultiApp
 import pandas as pd
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
+
+import plotly.express as px
 
 local_css("style.css")
+
 
 @st.cache
 def load_data(uploadedfile):
@@ -32,6 +41,9 @@ if las_file:
         st.sidebar.success('File Uploaded Successfully')
         st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
 
+well_data = las_file.df()
+well_data['DEPTH'] = well_data.index
+
 def home():
     st.title('LAS Data Explorer')
     st.write('## Welcome to the LAS Data Explorer')
@@ -49,22 +61,90 @@ def header():
             st.write(f"<b>{item.descr.capitalize()} ({item.mnemonic}):</b> {item.value}", unsafe_allow_html=True)
 
 def raw_data():
-    for count, curve in enumerate(las_file.curves):
-        st.write(f"<b>Curve:</b> {curve.mnemonic}, <b>Units: </b>{curve.unit}, <b>Description:</b> {curve.descr}", unsafe_allow_html=True)
-    st.write(f"<b>There are a total of: {count+1} curves present within this file</b>", unsafe_allow_html=True)
-    well_data = las_file.df()
-    st.write('<b>Data Statistics</b>', unsafe_allow_html=True)
-    st.write(well_data.describe())
-    st.write('<b>Raw Data Values</b>', unsafe_allow_html=True)
-    st.dataframe(data=well_data)
+    st.title('LAS File Data Info')
+    if not las_file:
+        st.warning('No file has been uploaded')
+    else:
+        st.write('**Curve Information**')
+        for count, curve in enumerate(las_file.curves):
+            # st.write(f"<b>Curve:</b> {curve.mnemonic}, <b>Units: </b>{curve.unit}, <b>Description:</b> {curve.descr}", unsafe_allow_html=True)
+            st.write(f"   {curve.mnemonic} ({curve.unit}): {curve.descr}", unsafe_allow_html=True)
+        st.write(f"<b>There are a total of: {count+1} curves present within this file</b>", unsafe_allow_html=True)
+        
+        st.write('<b>Curve Statistics</b>', unsafe_allow_html=True)
+        st.write(well_data.describe())
+        st.write('<b>Raw Data Values</b>', unsafe_allow_html=True)
+        st.dataframe(data=well_data)
             
+def plot():
+    st.title('LAS File Visualisation')
+    st.write('Expand one of the following to visualise your well data.')
+    columns = list(well_data.columns)
+
+    with st.beta_expander('Log Plot'):    
+        curves = st.multiselect('Select Curves To Plot', columns)
+        if len(curves) <= 1:
+            st.warning('Please select at least 2 curves.')
+        else:
+            curve_index = 1
+            fig = make_subplots(rows=1, cols= len(curves), subplot_titles=curves, shared_yaxes=True)
+
+            for curve in curves:
+                fig.add_trace(go.Scatter(x=well_data[curve], y=well_data['DEPTH']), row=1, col=curve_index)
+                curve_index+=1
+            
+            fig.update_layout(height=1000, showlegend=False, yaxis={'title':'DEPTH','autorange':'reversed'})
+            fig.layout.template='seaborn'
+            st.plotly_chart(fig, use_container_width=True)
+
+    with st.beta_expander('Histograms'):
+        st.write('Histogram..........')
+        hist_curve = st.selectbox('Select a Curve', columns)
+        log_option = st.radio('Select Linear or Logarithmic Scale', ('Linear', 'Logarithmic'))
+        
+        if log_option == 'Linear':
+            log_bool = False
+        else:
+            log_bool = True
+        
+        histogram = px.histogram(well_data, x=hist_curve, log_x=log_bool)
+        st.plotly_chart(histogram, use_container_width=True)
+
+
+    with st.beta_expander('Crossplot'):
+        col1, col2 = st.beta_columns(2)
+        col1.header('Options')
+        xplot_x = col1.selectbox('X-Axis', columns)
+        xplot_y = col1.selectbox('Y-Axis', columns)
+        xplot_col = col1.selectbox('Color By', columns)
+        xplot_x_log = col1.radio('X Axis - Linear or Logarithmic', ('Linear', 'Logarithmic'))
+        xplot_y_log = col1.radio('Y Axis - Linear or Logarithmic', ('Linear', 'Logarithmic'))
+
+
+        col2.header('Crossplot')
+
+        xplot = px.scatter(well_data, x=xplot_x, y=xplot_y, color=xplot_col)
+        col2.plotly_chart(xplot, use_container_width=True)
+
+        # st.write('plot')
+
+def missing_data():
+    st.title('Missing Data')
+    missing_data = well_data.copy()
+
+
+    missing = px.area(well_data, x='DEPTH', y='DT')
+    st.plotly_chart(missing)
+
+
+    
 
 app = MultiApp()
 app.add_app('Home', home)
 app.add_app('Header Info', header)
 app.add_app('Data Information', raw_data)
-app.add_app('Data Visualisation', header)
-app.add_app('Data Coverage', header)
+app.add_app('Data Visualisation - Log Plot', plot)
+app.add_app('Data Coverage', missing_data)
 
 
 
