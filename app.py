@@ -33,18 +33,37 @@ if las_file:
     st.sidebar.success('File Uploaded Successfully')
     st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
 
-# Create the dataframe
-well_data = las_file.df()
+    # Create the dataframe
+    well_data = las_file.df()
 
-#Assign the dataframe index to a curve
-well_data['DEPTH'] = well_data.index
+    #Assign the dataframe index to a curve
+    well_data['DEPTH'] = well_data.index
 
 def home():
-    st.title('LAS Data Explorer')
+    st.title('LAS Data Explorer - Version 0.1')
     st.write('## Welcome to the LAS Data Explorer')
-    st.write('''LAS Data Explorer is a tool designed in Streamlit to help you view and gain an understanding of the contents of
-    a LAS file''')
-    st.write('To begin using the app, load your LAS file using the file upload option below.')
+    st.write('### Created by Andy McDonald')
+    st.write('''LAS Data Explorer is a tool designed using Python and Streamlit to help you view and gain an understanding of the contents of
+    a LAS file.''')
+    st.write('To begin using the app, load your LAS file using the file upload option on the sidebar. Once you have done this, you can navigate to the relevant tools using the Navigation menu.')
+    st.write('\n')
+    st.write('## Sections')
+    st.write('**Header Info:** Information from the LAS file header.')
+    st.write('**Data Information Info:** Information about the curves contained within the LAS file, including names, statisics and raw data values.')
+    st.write('**Data Visualisation:** Visualisation tools to view las file data on a log plot, crossplot and histogram.')
+    st.write('## Get in Touch')
+    githublink = """<a href='https://github.com/andymcdgeo/las_explorer' target="_blank">https://github.com/andymcdgeo/las_explorer</a>"""
+    st.write(f'\n\nCheck out the GitHub Repo at: {githublink}. If you find any bugs or have suggestions, please open a new issue and I will look into it.', unsafe_allow_html=True)
+    st.write('\nIf you want to get in touch, you can find me on Social Media.')
+    
+    sm_li = """<a href='https://github.com/andymcdgeo/las_explorer' target="_blank"><img src='/graphics/linkedin.png'></a>"""
+    
+    st.write(f'{sm_li}', unsafe_allow_html=True)
+
+    st.write('## Source Code, Bugs, Feature Requests')
+    githublink = """<a href='https://github.com/andymcdgeo/las_explorer' target="_blank">https://github.com/andymcdgeo/las_explorer</a>"""
+    st.write(f'\n\nCheck out the GitHub Repo at: {githublink}. If you find any bugs or have suggestions, please open a new issue and I will look into it.', unsafe_allow_html=True)
+
 
 
 def header():
@@ -73,13 +92,13 @@ def raw_data():
             
 def plot():
     st.title('LAS File Visualisation')
-    st.write('Expand one of the following to visualise your well data.')
+    
     if not las_file:
         st.warning('No file has been uploaded')
     
     else:
         columns = list(well_data.columns)
-
+        st.write('Expand one of the following to visualise your well data.')
         with st.beta_expander('Log Plot'):    
             curves = st.multiselect('Select Curves To Plot', columns)
             if len(curves) <= 1:
