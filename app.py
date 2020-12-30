@@ -21,6 +21,24 @@ def load_data(uploadedfile):
         las_file = lasio.read(string)
         return las_file
 
+# Sidebar Options
+las_file=None
+st.sidebar.write('# LAS Data Explorer')
+st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
+
+uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
+las_file = load_data(uploadedfile)
+
+if las_file:
+    st.sidebar.success('File Uploaded Successfully')
+    st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
+
+# Create the dataframe
+well_data = las_file.df()
+
+#Assign the dataframe index to a curve
+well_data['DEPTH'] = well_data.index
+
 def home():
     st.title('LAS Data Explorer')
     st.write('## Welcome to the LAS Data Explorer')
@@ -127,23 +145,7 @@ def missing_data():
     missing = px.area(well_data, x='DEPTH', y='DT')
     st.plotly_chart(missing)
 
-# Sidebar Options
-las_file=None
-st.sidebar.write('# LAS Data Explorer')
-st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
 
-uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
-las_file = load_data(uploadedfile)
-
-if las_file:
-    st.sidebar.success('File Uploaded Successfully')
-    st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
-
-    # Create the dataframe
-    well_data = las_file.df()
-
-    #Assign the dataframe index to a curve
-    well_data['DEPTH'] = well_data.index
 
 #Use the Multi App to create menu
 app = MultiApp()
