@@ -1,5 +1,5 @@
 import streamlit as st
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title='LAS Explorer v.0.1')
 
 from load_css import local_css
 import lasio
