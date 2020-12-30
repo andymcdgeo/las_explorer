@@ -28,22 +28,6 @@ def load_data(uploadedfile):
 
         return las_file
 
-
-# Sidebar Options
-las_file=None
-st.sidebar.write('# LAS Data Explorer')
-st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
-
-uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
-las_file = load_data(uploadedfile)
-
-if las_file:
-        st.sidebar.success('File Uploaded Successfully')
-        st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
-
-well_data = las_file.df()
-well_data['DEPTH'] = well_data.index
-
 def home():
     st.title('LAS Data Explorer')
     st.write('## Welcome to the LAS Data Explorer')
@@ -81,6 +65,7 @@ def plot():
     st.write('Expand one of the following to visualise your well data.')
     columns = list(well_data.columns)
 
+    #Log plot section
     with st.beta_expander('Log Plot'):    
         curves = st.multiselect('Select Curves To Plot', columns)
         if len(curves) <= 1:
@@ -97,33 +82,48 @@ def plot():
             fig.layout.template='seaborn'
             st.plotly_chart(fig, use_container_width=True)
 
+    #Histogram Section
     with st.beta_expander('Histograms'):
-        st.write('Histogram..........')
-        hist_curve = st.selectbox('Select a Curve', columns)
-        log_option = st.radio('Select Linear or Logarithmic Scale', ('Linear', 'Logarithmic'))
+        col1_h, col2_h = st.beta_columns(2)
+        col1_h.write('Options')
+
+        hist_curve = col1_h.selectbox('Select a Curve', columns)
+        log_option = col1_h.radio('Select Linear or Logarithmic Scale', ('Linear', 'Logarithmic'))
         
         if log_option == 'Linear':
             log_bool = False
-        else:
+        elif log_option == 'Logarithmic':
             log_bool = True
         
         histogram = px.histogram(well_data, x=hist_curve, log_x=log_bool)
-        st.plotly_chart(histogram, use_container_width=True)
+        histogram.layout.template='seaborn'
+        col2_h.plotly_chart(histogram, use_container_width=True)
 
-
+    #Crossplot Section
     with st.beta_expander('Crossplot'):
         col1, col2 = st.beta_columns(2)
-        col1.header('Options')
+        col1.write('Options')
+
         xplot_x = col1.selectbox('X-Axis', columns)
         xplot_y = col1.selectbox('Y-Axis', columns)
         xplot_col = col1.selectbox('Color By', columns)
         xplot_x_log = col1.radio('X Axis - Linear or Logarithmic', ('Linear', 'Logarithmic'))
         xplot_y_log = col1.radio('Y Axis - Linear or Logarithmic', ('Linear', 'Logarithmic'))
 
+        if xplot_x_log == 'Linear':
+            xplot_x_bool = False
+        elif xplot_x_log == 'Logarithmic':
+            xplot_x_bool = True
+        
+        if xplot_y_log == 'Linear':
+            xplot_y_bool = False
+        elif xplot_y_log == 'Logarithmic':
+            xplot_y_bool = True
 
-        col2.header('Crossplot')
+        col2.write('Crossplot')
 
-        xplot = px.scatter(well_data, x=xplot_x, y=xplot_y, color=xplot_col)
+        xplot = px.scatter(well_data, x=xplot_x, y=xplot_y, color=xplot_col, log_x=xplot_x_bool, log_y=xplot_y_bool)
+        xplot.layout.template='seaborn'
         col2.plotly_chart(xplot, use_container_width=True)
 
         # st.write('plot')
@@ -136,16 +136,31 @@ def missing_data():
     missing = px.area(well_data, x='DEPTH', y='DT')
     st.plotly_chart(missing)
 
+# Sidebar Options
+las_file=None
+st.sidebar.write('# LAS Data Explorer')
+st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
 
-    
+uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
+las_file = load_data(uploadedfile)
 
+if las_file:
+    st.sidebar.success('File Uploaded Successfully')
+    st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
+
+    # Create the dataframe
+    well_data = las_file.df()
+
+    #Assign the dataframe index to a curve
+    well_data['DEPTH'] = well_data.index
+
+#Use the Multi App to create menu
 app = MultiApp()
+st.sidebar.write('**Navigation**')
 app.add_app('Home', home)
 app.add_app('Header Info', header)
 app.add_app('Data Information', raw_data)
-app.add_app('Data Visualisation - Log Plot', plot)
+app.add_app('Data Visualisation', plot)
 app.add_app('Data Coverage', missing_data)
-
-
 
 app.run()
