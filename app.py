@@ -21,24 +21,6 @@ def load_data(uploadedfile):
         las_file = lasio.read(string)
         return las_file
 
-# Sidebar Options
-las_file=None
-st.sidebar.write('# LAS Data Explorer')
-st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
-
-uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
-las_file = load_data(uploadedfile)
-
-if las_file:
-    st.sidebar.success('File Uploaded Successfully')
-    st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
-
-    # Create the dataframe
-    well_data = las_file.df()
-
-    #Assign the dataframe index to a curve
-    well_data['DEPTH'] = well_data.index
-
 def home():
     pweb = """<a href='http://andymcdonald.scot' target="_blank">http://andymcdonald.scot</a>"""
     sm_li = """<a href='https://www.linkedin.com/in/andymcdonaldgeo/' target="_blank"><img src='https://cdn.exclaimer.com/Handbook%20Images/linkedin-icon_32x32.png'></a>"""
@@ -58,15 +40,12 @@ def home():
     st.write('**Data Visualisation:** Visualisation tools to view las file data on a log plot, crossplot and histogram.')
     st.write('## Get in Touch')
     st.write(f'\nIf you want to get in touch, you can find me on Social Media at the links below or visit my website at: {pweb}.', unsafe_allow_html=True)
-
     
     st.write(f'{sm_li}  {sm_med}  {sm_tw}', unsafe_allow_html=True)
 
     st.write('## Source Code, Bugs, Feature Requests')
     githublink = """<a href='https://github.com/andymcdgeo/las_explorer' target="_blank">https://github.com/andymcdgeo/las_explorer</a>"""
     st.write(f'\n\nCheck out the GitHub Repo at: {githublink}. If you find any bugs or have suggestions, please open a new issue and I will look into it.', unsafe_allow_html=True)
-
-
 
 def header():
     st.title('LAS File Header Info')
@@ -133,7 +112,6 @@ def plot():
             histogram.layout.template='seaborn'
             col2_h.plotly_chart(histogram, use_container_width=True)
 
-
         with st.beta_expander('Crossplot'):
             col1, col2 = st.beta_columns(2)
             col1.write('Options')
@@ -166,7 +144,23 @@ def missing_data():
     missing = px.area(well_data, x='DEPTH', y='DT')
     st.plotly_chart(missing)
 
+# Sidebar Options
+las_file=None
+st.sidebar.write('# LAS Data Explorer')
+st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
 
+uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
+las_file = load_data(uploadedfile)
+
+if las_file:
+    st.sidebar.success('File Uploaded Successfully')
+    st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
+
+    # Create the dataframe
+    well_data = las_file.df()
+
+    #Assign the dataframe index to a curve
+    well_data['DEPTH'] = well_data.index
 
 #Use the Multi App to create menu
 app = MultiApp()

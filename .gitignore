@@ -1,2 +1,4 @@
 reference/
 __pycache__/
+.vscode/launch.json
+.vscode/settings.json
