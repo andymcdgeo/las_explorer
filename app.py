@@ -156,11 +156,11 @@ if las_file:
     st.sidebar.success('File Uploaded Successfully')
     st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
 
-    # Create the dataframe
-    well_data = las_file.df()
+# Create the dataframe
+well_data = las_file.df()
 
-    #Assign the dataframe index to a curve
-    well_data['DEPTH'] = well_data.index
+#Assign the dataframe index to a curve
+well_data['DEPTH'] = well_data.index
 
 #Use the Multi App to create menu
 app = MultiApp()
