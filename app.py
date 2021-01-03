@@ -18,7 +18,17 @@ def load_data(uploadedfile):
     if uploadedfile:
         string = uploadedfile.read().decode()
         las_file = lasio.read(string)
-        return las_file
+
+        # Create the dataframe
+        well_data = las_file.df()
+
+        #Assign the dataframe index to a curve
+        well_data['DEPTH'] = well_data.index
+    else:
+        las_file=None
+        well_data=None
+    
+    return las_file, well_data
 
 #TODO
 def missing_data():
@@ -33,20 +43,12 @@ st.sidebar.write('# LAS Data Explorer')
 st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
 
 uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
-las_file = load_data(uploadedfile)
+las_file, well_data = load_data(uploadedfile)
 
 if las_file:
     st.sidebar.success('File Uploaded Successfully')
     st.sidebar.write(f'<b>Well Name</b>: {las_file.well.WELL.value}',unsafe_allow_html=True)
 
-    # Create the dataframe
-    well_data = las_file.df()
-
-    #Assign the dataframe index to a curve
-    well_data['DEPTH'] = well_data.index
-
-else:
-    well_data=None
 
 # Sidebar Navigation
 st.sidebar.title('Navigation')
