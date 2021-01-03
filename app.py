@@ -11,6 +11,10 @@ import raw_data
 import plotting
 import header
 
+# import debugpy
+# debugpy.listen(5677)
+# debugpy.wait_for_client()  # blocks execution until client is attached
+
 local_css("style.css")
 
 @st.cache
