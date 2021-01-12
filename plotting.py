@@ -17,6 +17,7 @@ def plot(las_file, well_data):
     else:
         columns = list(well_data.columns)
         st.write('Expand one of the following to visualise your well data.')
+        st.write("""Each plot can be interacted with. To change the scales of a plot/track, click on the left hand or right hand side of the scale and change the value as required.""")
         with st.beta_expander('Log Plot'):    
             curves = st.multiselect('Select Curves To Plot', columns)
             if len(curves) <= 1:
@@ -39,13 +40,17 @@ def plot(las_file, well_data):
 
             hist_curve = col1_h.selectbox('Select a Curve', columns)
             log_option = col1_h.radio('Select Linear or Logarithmic Scale', ('Linear', 'Logarithmic'))
+            hist_col = col1_h.color_picker('Select Histogram Colour')
+            st.write('Color is'+hist_col)
             
             if log_option == 'Linear':
                 log_bool = False
             elif log_option == 'Logarithmic':
                 log_bool = True
-            
+        
+
             histogram = px.histogram(well_data, x=hist_curve, log_x=log_bool)
+            histogram.update_traces(marker_color=hist_col)
             histogram.layout.template='seaborn'
             col2_h.plotly_chart(histogram, use_container_width=True)
 
@@ -70,7 +75,7 @@ def plot(las_file, well_data):
                 xplot_y_bool = True
 
             col2.write('Crossplot')
-
+           
             xplot = px.scatter(well_data, x=xplot_x, y=xplot_y, color=xplot_col, log_x=xplot_x_bool, log_y=xplot_y_bool)
             xplot.layout.template='seaborn'
             col2.plotly_chart(xplot, use_container_width=True)
