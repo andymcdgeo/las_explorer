@@ -11,24 +11,29 @@ import raw_data
 import plotting
 import header
 
+from io import StringIO
+
 local_css("style.css")
 
+
 @st.cache
-def load_data(uploadedfile):
-    if uploadedfile:
-        string = uploadedfile.read().decode()
-        las_file = lasio.read(string)
+def load_data(uploaded_file):
+    if uploaded_file is not None:
+        try:
+            bytes_data = uploaded_file.read()
+            str_io = StringIO(bytes_data.decode('Windows-1252'))
+            las_file = lasio.read(str_io)
+            well_data = las_file.df()
+            well_data['DEPTH'] = well_data.index
 
-        # Create the dataframe
-        well_data = las_file.df()
-
-        #Assign the dataframe index to a curve
-        well_data['DEPTH'] = well_data.index
+        except UnicodeDecodeError as e:
+            print(f"error loading log.las: {e}")
     else:
-        las_file=None
-        well_data=None
-    
+        las_file = None
+        well_data = None
+
     return las_file, well_data
+
 
 #TODO
 def missing_data():
@@ -42,7 +47,7 @@ las_file=None
 st.sidebar.write('# LAS Data Explorer')
 st.sidebar.write('To begin using the app, load your LAS file using the file upload option below.')
 
-uploadedfile = st.sidebar.file_uploader(' ', type=['las'])
+uploadedfile = st.sidebar.file_uploader(' ', type=['.las'])
 las_file, well_data = load_data(uploadedfile)
 
 if las_file:
