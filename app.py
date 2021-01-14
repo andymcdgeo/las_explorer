@@ -27,7 +27,7 @@ def load_data(uploaded_file):
             well_data['DEPTH'] = well_data.index
 
         except UnicodeDecodeError as e:
-            print(f"error loading log.las: {e}")
+            st.error(f"error loading log.las: {e}")
     else:
         las_file = None
         well_data = None
