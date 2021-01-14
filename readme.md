@@ -1,5 +1,5 @@
 # LAS Explorer
-## Version 0.1
+## Version 0.2.0
 
 The LAS Data Explorer is a tool designed using Python and Streamlit to help you view and gain an understanding of the contents of a LAS file. Current functionality includes:
 * Loading LAS files
@@ -7,7 +7,7 @@ The LAS Data Explorer is a tool designed using Python and Streamlit to help you 
 * Viewing Curve Information (names, values and statistics)
 * Visualising LAS data using an interactive log plot
 * Visualising LAS data using an interactive crossplot (scatter plot) and histogram
-
+* Display data coverage
 
 A running version of the app can be accessed at at https://las-explorer.herokuapp.com. The app may run slowly when accessing it. This is due to the hosting and should not affect functionality.
 
