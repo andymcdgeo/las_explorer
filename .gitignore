@@ -2,4 +2,5 @@ reference/
 __pycache__/
 .vscode/launch.json
 .vscode/settings.json
+proj/
 testing_files/
