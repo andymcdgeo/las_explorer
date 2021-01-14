@@ -6,7 +6,7 @@ def home():
     sm_tw = """<a href='https://twitter.com/geoandymcd' target="_blank"><img src='https://cdn.exclaimer.com/Handbook%20Images/twitter-icon_32x32.png'></a>"""
     sm_med = """<a href='https://medium.com/@andymcdonaldgeo/' target="_blank"><img src='https://cdn.exclaimer.com/Handbook%20Images/Medium_32.png'></a>"""
 
-    st.title('LAS Data Explorer - Version 0.1')
+    st.title('LAS Data Explorer - Version 0.2.0')
     st.write('## Welcome to the LAS Data Explorer')
     st.write('### Created by Andy McDonald')
     st.write('''LAS Data Explorer is a tool designed using Python and Streamlit to help you view and gain an understanding of the contents of
