@@ -10,6 +10,7 @@ import home
 import raw_data
 import plotting
 import header
+import missingdata
 
 from io import StringIO
 
@@ -57,7 +58,8 @@ if las_file:
 
 # Sidebar Navigation
 st.sidebar.title('Navigation')
-options = st.sidebar.radio('Select a page:', ['Home', 'Header Information', 'Data Information', 'Data Visualisation'])
+options = st.sidebar.radio('Select a page:', 
+    ['Home', 'Header Information', 'Data Information', 'Data Visualisation', 'Missing Data Visualisation'])
 
 if options == 'Home':
     home.home()
@@ -67,3 +69,5 @@ elif options == 'Data Information':
     raw_data.raw_data(las_file, well_data)
 elif options == 'Data Visualisation':
     plotting.plot(las_file, well_data)
+elif options == 'Missing Data Visualisation':
+    missingdata.missing(las_file, well_data)
