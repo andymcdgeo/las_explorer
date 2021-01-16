@@ -15,8 +15,9 @@ def home():
     st.write('\n')
     st.write('## Sections')
     st.write('**Header Info:** Information from the LAS file header.')
-    st.write('**Data Information Info:** Information about the curves contained within the LAS file, including names, statisics and raw data values.')
+    st.write('**Data Information:** Information about the curves contained within the LAS file, including names, statisics and raw data values.')
     st.write('**Data Visualisation:** Visualisation tools to view las file data on a log plot, crossplot and histogram.')
+    st.write('**Missing Data Visualisation:** Visualisation tools understand data extent and identify areas of missing values.')
     st.write('## Get in Touch')
     st.write(f'\nIf you want to get in touch, you can find me on Social Media at the links below or visit my website at: {pweb}.', unsafe_allow_html=True)
     
