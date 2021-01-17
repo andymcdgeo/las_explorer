@@ -27,9 +27,6 @@ def missing(las_file, well_data):
         columns = list(well_data.columns)
         columns.pop(-1) #pop off depth
 
-        min_depth = well_data['DEPTH'].min()
-        max_depth = well_data['DEPTH'].max()
-
         col1_md, col2_md= st.beta_columns(2)
 
         selection = col1_md.radio('Select all data or custom selection', ('All Data', 'Custom Selection'))
