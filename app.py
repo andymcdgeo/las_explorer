@@ -11,6 +11,7 @@ import raw_data
 import plotting
 import header
 import missingdata
+from state import count_sessions
 
 from io import StringIO
 
@@ -42,6 +43,9 @@ def missing_data():
     missing_data = well_data.copy()
     missing = px.area(well_data, x='DEPTH', y='DT')
     st.plotly_chart(missing)
+
+
+count_sessions()
 
 # Sidebar Options & File Uplaod
 las_file=None
