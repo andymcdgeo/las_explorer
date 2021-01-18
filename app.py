@@ -10,6 +10,7 @@ import home
 import raw_data
 import plotting
 import header
+import editing
 import missingdata
 
 from io import StringIO
@@ -17,7 +18,7 @@ from io import StringIO
 local_css("style.css")
 
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def load_data(uploaded_file):
     if uploaded_file is not None:
         try:
@@ -59,7 +60,7 @@ if las_file:
 # Sidebar Navigation
 st.sidebar.title('Navigation')
 options = st.sidebar.radio('Select a page:', 
-    ['Home', 'Header Information', 'Data Information', 'Data Visualisation', 'Missing Data Visualisation'])
+    ['Home', 'Header Information', 'Data Information', 'Data Visualisation', 'Missing Data Visualisation', 'Edit LAS Data'])
 
 if options == 'Home':
     home.home()
@@ -71,3 +72,5 @@ elif options == 'Data Visualisation':
     plotting.plot(las_file, well_data)
 elif options == 'Missing Data Visualisation':
     missingdata.missing(las_file, well_data)
+elif options == 'Edit LAS Data':
+    editing.editing(las_file, well_data)
