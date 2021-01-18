@@ -24,7 +24,7 @@ def editing(las_file, df):
     else:
         output = df.to_csv('test.csv', sep=',', encoding='utf-8')
 
-        df['GAMN_avg'] = df['GR'].rolling(int(1 / las_file.well.STEP.value), center=True).mean()
+        # df['GAMN_avg'] = df['GR'].rolling(int(1 / las_file.well.STEP.value), center=True).mean()
 
         las_file.set_data(df)
         las_file.write('testingappendq.las', version=2)
