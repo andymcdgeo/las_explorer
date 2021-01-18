@@ -12,6 +12,7 @@ import plotting
 import header
 import editing
 import missingdata
+import download
 
 from io import StringIO
 
@@ -60,7 +61,8 @@ if las_file:
 # Sidebar Navigation
 st.sidebar.title('Navigation')
 options = st.sidebar.radio('Select a page:', 
-    ['Home', 'Header Information', 'Data Information', 'Data Visualisation', 'Missing Data Visualisation', 'Edit LAS Data'])
+    ['Home', 'Header Information', 'Data Information', 'Data Visualisation', 'Missing Data Visualisation',
+     'Edit LAS Data', 'Download Data'])
 
 if options == 'Home':
     home.home()
@@ -74,3 +76,5 @@ elif options == 'Missing Data Visualisation':
     missingdata.missing(las_file, well_data)
 elif options == 'Edit LAS Data':
     editing.editing(las_file, well_data)
+elif options == 'Download Data':
+    download.download(las_file, well_data)
