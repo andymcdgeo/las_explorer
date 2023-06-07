@@ -6,9 +6,9 @@ def home():
     sm_tw = """<a href='https://twitter.com/geoandymcd' target="_blank"><img src='https://cdn.exclaimer.com/Handbook%20Images/twitter-icon_32x32.png'></a>"""
     sm_med = """<a href='https://medium.com/@andymcdonaldgeo/' target="_blank"><img src='https://cdn.exclaimer.com/Handbook%20Images/Medium_32.png'></a>"""
 
-    st.title('LAS Data Explorer - Version 0.2.0')
+    st.title('LAS Data Explorer - Version 0.2.1')
     st.write('## Welcome to the LAS Data Explorer')
-    st.write('### Created by Andy McDonald')
+    st.write('### Created by Andy McDonald, modified by Stanislav Nikulin')
     st.write('''LAS Data Explorer is a tool designed using Python and Streamlit to help you view and gain an understanding of the contents of
     a LAS file.''')
     st.write('To begin using the app, load your LAS file using the file upload option on the sidebar. Once you have done this, you can navigate to the relevant tools using the Navigation menu.')
