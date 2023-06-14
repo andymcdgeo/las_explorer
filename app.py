@@ -5,6 +5,10 @@ from load_css import local_css
 import lasio
 import missingno as mno
 import pandas as pd
+
+#cor_1
+import plotly.express as px 
+
 # Local Imports
 import home
 import raw_data
@@ -17,7 +21,7 @@ from io import StringIO
 local_css("style.css")
 
 
-@st.cache
+@st.cache_data
 def load_data(uploaded_file):
     if uploaded_file is not None:
         try:

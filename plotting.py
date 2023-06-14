@@ -18,7 +18,7 @@ def plot(las_file, well_data):
         columns = list(well_data.columns)
         st.write('Expand one of the following to visualise your well data.')
         st.write("""Each plot can be interacted with. To change the scales of a plot/track, click on the left hand or right hand side of the scale and change the value as required.""")
-        with st.beta_expander('Log Plot'):    
+        with st.expander('Log Plot'):    
             curves = st.multiselect('Select Curves To Plot', columns)
             if len(curves) <= 1:
                 st.warning('Please select at least 2 curves.')
@@ -34,8 +34,8 @@ def plot(las_file, well_data):
                 fig.layout.template='seaborn'
                 st.plotly_chart(fig, use_container_width=True)
 
-        with st.beta_expander('Histograms'):
-            col1_h, col2_h = st.beta_columns(2)
+        with st.expander('Histograms'):
+            col1_h, col2_h = st.columns(2)
             col1_h.header('Options')
 
             hist_curve = col1_h.selectbox('Select a Curve', columns)
@@ -54,8 +54,8 @@ def plot(las_file, well_data):
             histogram.layout.template='seaborn'
             col2_h.plotly_chart(histogram, use_container_width=True)
 
-        with st.beta_expander('Crossplot'):
-            col1, col2 = st.beta_columns(2)
+        with st.expander('Crossplot'):
+            col1, col2 = st.columns(2)
             col1.write('Options')
 
             xplot_x = col1.selectbox('X-Axis', columns)

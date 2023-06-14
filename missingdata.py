@@ -27,7 +27,7 @@ def missing(las_file, well_data):
         columns = list(well_data.columns)
         columns.pop(-1) #pop off depth
 
-        col1_md, col2_md= st.beta_columns(2)
+        col1_md, col2_md= st.columns(2)
 
         selection = col1_md.radio('Select all data or custom selection', ('All Data', 'Custom Selection'))
         fill_color_md = col2_md.color_picker('Select Fill Colour', '#9D0000')
